@@ -113,9 +113,9 @@ button {
 .h-xl {
   font-family: var(--grotesque);
   font-weight: 700;
-  font-size: clamp(2.4rem, 1.2rem + 5.5vw, 5.5rem);
-  line-height: 0.95;
-  letter-spacing: -0.03em;
+  font-size: clamp(2.5rem, 1.2rem + 6vw, 6rem);
+  line-height: 0.9;
+  letter-spacing: -0.04em;
   margin: 0;
 }
 
@@ -256,9 +256,9 @@ button {
 .hero-title {
   font-family: var(--grotesque);
   font-weight: 700;
-  font-size: clamp(2.9rem, 1rem + 8vw, 7.5rem);
-  line-height: 0.9;
-  letter-spacing: -0.035em;
+  font-size: clamp(3rem, 1rem + 8.5vw, 8rem);
+  line-height: 0.85;
+  letter-spacing: -0.05em;
   margin: 0;
 }
 
@@ -1099,9 +1099,9 @@ button {
 .closing-mark {
   font-family: var(--grotesque);
   font-weight: 700;
-  font-size: clamp(3.2rem, 15vw, 15rem);
-  line-height: 0.82;
-  letter-spacing: -0.045em;
+  font-size: clamp(3.4rem, 16vw, 16rem);
+  line-height: 0.79;
+  letter-spacing: -0.05em;
   margin: 0;
 }
 
