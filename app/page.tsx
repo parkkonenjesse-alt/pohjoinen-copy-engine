@@ -3,9 +3,11 @@
 /* eslint-disable @next/next/no-img-element */
 
 import { useEffect, useRef, useState } from "react";
+import Lenis from "lenis";
 import { Reveal } from "@/components/Reveal";
 import { ResultCard, type LangResult } from "@/components/ResultCard";
 import { ArticleStudio } from "@/components/ArticleStudio";
+import { ParallaxBand } from "@/components/ParallaxBand";
 import { LANGS, SAMPLE_PRODUCTS, type Lang } from "@/lib/samples";
 import { BRAND_SYSTEM, buildUserPrompt, type Product } from "@/lib/prompt";
 import { buildCsv, slugify, type CsvRow } from "@/lib/csv";
@@ -34,6 +36,20 @@ export default function Page() {
     if (v && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       v.pause();
     }
+  }, []);
+
+  // Lenis inertia smooth-scroll (the Locomotive "glide"). Skipped for reduced motion.
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const lenis = new Lenis({ anchors: true });
+    let id = requestAnimationFrame(function raf(t) {
+      lenis.raf(t);
+      id = requestAnimationFrame(raf);
+    });
+    return () => {
+      cancelAnimationFrame(id);
+      lenis.destroy();
+    };
   }, []);
 
   const selectedLangs: Lang[] = LANGS.filter((l) => selected.includes(l.code));
@@ -172,9 +188,12 @@ export default function Page() {
           <div className="hero-text">
             <p className="hero-eyebrow">Catalog Copy Engine · Opportunity 02</p>
             <h1 className="hero-title">
-              A few specs in.
-              <br />
-              Store-ready copy out.
+              <span className="line">
+                <span className="line-inner">A few specs in.</span>
+              </span>
+              <span className="line">
+                <span className="line-inner">Store-ready copy out.</span>
+              </span>
             </h1>
             <p className="hero-lede">
               Turn a few product specs into SEO-ready, multilingual store copy. Built to
@@ -370,6 +389,9 @@ export default function Page() {
             <ArticleStudio />
           </Reveal>
         </section>
+
+        {/* ---- parallax thumbnail band ---- */}
+        <ParallaxBand />
 
         {/* ---- scale story (Market Snapshot layout) ---- */}
         <section id="scale" className="scale">
