@@ -61,6 +61,7 @@ export function ArticleStudio() {
               type="button"
               className="chip"
               data-active={topic === t}
+              aria-pressed={topic === t}
               onClick={() => setTopic(t)}
             >
               {t.length > 22 ? `${t.slice(0, 22)}…` : t}
@@ -82,6 +83,7 @@ export function ArticleStudio() {
                 type="button"
                 className="lang-toggle"
                 data-on={lang === l.code}
+                aria-pressed={lang === l.code}
                 onClick={() => setLang(l.code)}
               >
                 {l.name}
@@ -114,7 +116,7 @@ export function ArticleStudio() {
       </div>
 
       {/* output */}
-      <div className="output">
+      <div className="output" aria-live="polite">
         <div className="out-head">
           <h3 className="h-lg">The draft.</h3>
         </div>

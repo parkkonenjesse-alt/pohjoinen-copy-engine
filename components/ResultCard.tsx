@@ -17,22 +17,29 @@ function CharCount({ n, max }: { n: number; max: number }) {
   );
 }
 
-function CopyButton({ text, label = "Copy" }: { text: string; label?: string }) {
-  const [done, setDone] = useState(false);
+function CopyButton({ text, what }: { text: string; what: string }) {
+  const [state, setState] = useState<"idle" | "done" | "failed">("idle");
 
   async function copy() {
     try {
       await navigator.clipboard.writeText(text);
-      setDone(true);
-      window.setTimeout(() => setDone(false), 1400);
+      setState("done");
+      window.setTimeout(() => setState("idle"), 1400);
     } catch {
-      // Clipboard can be blocked (e.g. insecure context); fail quietly.
+      setState("failed");
+      window.setTimeout(() => setState("idle"), 2000);
     }
   }
 
   return (
-    <button type="button" className="copy" data-done={done} onClick={copy}>
-      {done ? "Copied ✓" : label}
+    <button
+      type="button"
+      className="copy"
+      data-done={state === "done"}
+      aria-label={`Copy ${what}`}
+      onClick={copy}
+    >
+      {state === "done" ? "Copied ✓" : state === "failed" ? "Copy failed" : "Copy"}
     </button>
   );
 }
@@ -76,7 +83,7 @@ function DoneBody({ data }: { data: CopyResult }) {
         <div className="field-head">
           <span className="label">SEO title</span>
           <CharCount n={data.seo_title.length} max={60} />
-          <CopyButton text={data.seo_title} />
+          <CopyButton text={data.seo_title} what="SEO title" />
         </div>
         <p className="value title-val">{data.seo_title}</p>
       </div>
@@ -85,7 +92,7 @@ function DoneBody({ data }: { data: CopyResult }) {
         <div className="field-head">
           <span className="label">Meta description</span>
           <CharCount n={data.meta_description.length} max={155} />
-          <CopyButton text={data.meta_description} />
+          <CopyButton text={data.meta_description} what="meta description" />
         </div>
         <p className="value">{data.meta_description}</p>
       </div>
@@ -93,7 +100,7 @@ function DoneBody({ data }: { data: CopyResult }) {
       <div className="field">
         <div className="field-head">
           <span className="label">Description</span>
-          <CopyButton text={data.description} />
+          <CopyButton text={data.description} what="description" />
         </div>
         <div className="value body-val">
           {paragraphs.map((p, i) => (
@@ -116,7 +123,7 @@ function DoneBody({ data }: { data: CopyResult }) {
       <div className="field">
         <div className="field-head">
           <span className="label">Keywords</span>
-          <CopyButton text={data.keywords.join(", ")} />
+          <CopyButton text={data.keywords.join(", ")} what="keywords" />
         </div>
         <div className="keywords">
           {data.keywords.map((k, i) => (

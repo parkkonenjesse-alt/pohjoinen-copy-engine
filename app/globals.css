@@ -1129,6 +1129,17 @@ button {
   transform: none;
 }
 
+/* Headline wipe — the big sentence-case headings clip up into view as their
+   block reveals (the Locomotive/Wolverine signature). */
+.reveal .h-xl {
+  clip-path: inset(0 0 110% 0);
+  transition: clip-path 1s var(--ease) 0.12s;
+}
+
+.reveal.is-shown .h-xl {
+  clip-path: inset(0 0 -20% 0);
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -1143,6 +1154,10 @@ button {
     transform: none !important;
     transition: none !important;
     animation: none !important;
+  }
+  .reveal .h-xl {
+    clip-path: none !important;
+    transition: none !important;
   }
   .card-status,
   .arr {

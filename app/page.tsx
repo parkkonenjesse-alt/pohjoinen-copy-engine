@@ -2,7 +2,7 @@
 
 /* eslint-disable @next/next/no-img-element */
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Reveal } from "@/components/Reveal";
 import { ResultCard, type LangResult } from "@/components/ResultCard";
 import { ArticleStudio } from "@/components/ArticleStudio";
@@ -26,6 +26,15 @@ export default function Page() {
   const [results, setResults] = useState<Record<string, LangResult>>({});
   const [generating, setGenerating] = useState(false);
   const [showPrompt, setShowPrompt] = useState(false);
+
+  // Pause the looping hero video for users who prefer reduced motion.
+  const videoRef = useRef<HTMLVideoElement>(null);
+  useEffect(() => {
+    const v = videoRef.current;
+    if (v && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      v.pause();
+    }
+  }, []);
 
   const selectedLangs: Lang[] = LANGS.filter((l) => selected.includes(l.code));
   const doneRows: CsvRow[] = selectedLangs
@@ -78,6 +87,10 @@ export default function Page() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ product, langCode: code }),
         });
+        const ct = res.headers.get("content-type") ?? "";
+        if (!ct.includes("application/json")) {
+          throw new Error(`Server error (HTTP ${res.status}).`);
+        }
         const json = (await res.json()) as GenerateResponse;
         setResults((prev) => ({
           ...prev,
@@ -102,16 +115,21 @@ export default function Page() {
   function exportCsv() {
     if (doneRows.length === 0) return;
     const handle = slugify(product.name) || "product";
-    const csv = buildCsv(handle, doneRows);
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const blob = new Blob([buildCsv(handle, doneRows)], {
+      type: "text/csv;charset=utf-8;",
+    });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${handle}-copy.csv`;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
+    try {
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${handle}-copy.csv`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    } finally {
+      // Revoke after the click is processed (revoking synchronously can abort it).
+      window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
   }
 
   const promptLang = selectedLangs[0] ?? LANGS[0];
@@ -122,6 +140,7 @@ export default function Page() {
       {/* ---- cinematic hero (video, photo fallback) ---- */}
       <header className="hero">
         <video
+          ref={videoRef}
           className="hero-media"
           autoPlay
           muted
@@ -134,7 +153,7 @@ export default function Page() {
         </video>
         <div className="hero-veil" aria-hidden="true" />
 
-        <nav className="nav">
+        <nav className="nav" aria-label="Main navigation">
           <span className="nav-logo">
             <span>Pohjoinen</span>
             <span className="lg-light">Catalog Engine</span>
@@ -206,6 +225,7 @@ export default function Page() {
                     type="button"
                     className="chip"
                     data-active={activeSample === s.key}
+                    aria-pressed={activeSample === s.key}
                     onClick={() => loadSample(s.key)}
                   >
                     {s.key}
@@ -254,6 +274,7 @@ export default function Page() {
                       type="button"
                       className="lang-toggle"
                       data-on={selected.includes(l.code)}
+                      aria-pressed={selected.includes(l.code)}
                       onClick={() => toggleLang(l.code)}
                     >
                       {l.name}
@@ -321,7 +342,7 @@ export default function Page() {
               )}
 
               {hasResults && (
-                <div className="cards">
+                <div className="cards" aria-live="polite">
                   {selectedLangs.map((lang) => {
                     const result = results[lang.code];
                     if (!result) return null;
@@ -409,7 +430,7 @@ export default function Page() {
             <a href="#scale">How it scales ↗</a>
             <span>AI · Next.js · Vercel</span>
           </div>
-          <h2 className="closing-mark">Pohjoinen</h2>
+          <div className="closing-mark" aria-hidden="true">Pohjoinen</div>
           <p className="closing-meta">
             Catalog Copy Engine · Opportunity 02 · Built for Pohjoinen Oy
           </p>
