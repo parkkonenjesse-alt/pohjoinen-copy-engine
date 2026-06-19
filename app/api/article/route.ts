@@ -65,8 +65,12 @@ export async function POST(req: Request): Promise<NextResponse<ArticleResponse>>
     const data = toArticle(extractJsonObject(text));
     return NextResponse.json({ ok: true, data });
   } catch (err) {
+    console.error("[article]", err);
     if (isTimeout(err)) return fail("Generation timed out. Please try again.", 504);
-    const message = err instanceof Error ? err.message : "Unknown generation error.";
-    return fail(`Generation failed: ${message}`, 502);
+    const m = err instanceof Error ? err.message : "";
+    if (/rate limited/i.test(m)) {
+      return fail("The free model is rate limited right now. Try again in a moment.", 429);
+    }
+    return fail("Generation failed. Please try again.", 502);
   }
 }

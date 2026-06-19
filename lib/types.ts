@@ -28,3 +28,7 @@ export type ArticleResult = {
 export type ArticleResponse =
   | { ok: true; data: ArticleResult }
   | { ok: false; error: string };
+
+export type PublishResponse =
+  | { ok: true; link: string; status: string }
+  | { ok: false; error: string };

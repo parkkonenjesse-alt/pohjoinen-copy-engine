@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { LANGS } from "@/lib/samples";
-import type { ArticleResponse, ArticleResult } from "@/lib/types";
+import type { ArticleResponse, ArticleResult, PublishResponse } from "@/lib/types";
 
 const SAMPLE_TOPICS = [
   "Miten valita talvitakki retkeilyyn",
@@ -145,7 +145,30 @@ export function ArticleStudio() {
   );
 }
 
+type PubState =
+  | { s: "idle" }
+  | { s: "loading" }
+  | { s: "done"; link: string }
+  | { s: "error"; msg: string };
+
 function DraftCard({ data }: { data: ArticleResult }) {
+  const [pub, setPub] = useState<PubState>({ s: "idle" });
+
+  async function publish() {
+    setPub({ s: "loading" });
+    try {
+      const res = await fetch("/api/publish", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ article: data }),
+      });
+      const json = (await res.json()) as PublishResponse;
+      setPub(json.ok ? { s: "done", link: json.link } : { s: "error", msg: json.error });
+    } catch (err) {
+      setPub({ s: "error", msg: err instanceof Error ? err.message : "Network error." });
+    }
+  }
+
   return (
     <article className="card">
       <div className="field">
@@ -226,6 +249,46 @@ function DraftCard({ data }: { data: ArticleResult }) {
           </div>
         </div>
       )}
+
+      <div className="field">
+        <div className="field-head">
+          <span className="label">Publish</span>
+        </div>
+        <button
+          type="button"
+          className="btn-pill"
+          onClick={publish}
+          disabled={pub.s === "loading"}
+        >
+          {pub.s === "loading" ? (
+            "Publishing…"
+          ) : (
+            <>
+              Publish to WordPress (draft) <span className="arr">↗</span>
+            </>
+          )}
+        </button>
+        {pub.s === "done" && (
+          <p className="value body-val" style={{ marginTop: "0.6rem" }}>
+            Published as a draft for editor review
+            {pub.link ? (
+              <>
+                {" — "}
+                <a href={pub.link} target="_blank" rel="noopener noreferrer">
+                  view in WordPress
+                </a>
+              </>
+            ) : (
+              "."
+            )}
+          </p>
+        )}
+        {pub.s === "error" && (
+          <p className="card-error" style={{ marginTop: "0.6rem" }}>
+            {pub.msg}
+          </p>
+        )}
+      </div>
     </article>
   );
 }

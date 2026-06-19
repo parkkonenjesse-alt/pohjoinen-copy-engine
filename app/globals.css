@@ -38,7 +38,7 @@
   --paper-2: #f5f5f2;
   --ink: #0c0c0a;
   --ink-2: #45443e;
-  --ink-3: #8b8a82;
+  --ink-3: #6e6d66;
   --line: #e7e6e1;
   --line-2: #d6d5cf;
   --btn: #ececea;
@@ -112,7 +112,7 @@ button {
 /* shared big type */
 .h-xl {
   font-family: var(--grotesque);
-  font-weight: 800;
+  font-weight: 700;
   font-size: clamp(2.4rem, 1.2rem + 5.5vw, 5.5rem);
   line-height: 0.95;
   letter-spacing: -0.03em;
@@ -185,7 +185,7 @@ button {
   display: inline-flex;
   align-items: baseline;
   gap: 0.55rem;
-  font-weight: 800;
+  font-weight: 700;
   font-size: 0.92rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -255,7 +255,7 @@ button {
 
 .hero-title {
   font-family: var(--grotesque);
-  font-weight: 800;
+  font-weight: 700;
   font-size: clamp(2.9rem, 1rem + 8vw, 7.5rem);
   line-height: 0.9;
   letter-spacing: -0.035em;
@@ -510,9 +510,18 @@ button {
 
 .f input:focus,
 .f textarea:focus {
-  outline: none;
   border-color: var(--ink);
   background: var(--paper);
+}
+
+/* Visible keyboard focus everywhere (WCAG 2.4.7) */
+:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+.f input:focus-visible,
+.f textarea:focus-visible {
+  outline-offset: 1px;
 }
 
 /* languages */
@@ -1007,7 +1016,7 @@ button {
 .stat-n {
   display: block;
   font-family: var(--grotesque);
-  font-weight: 800;
+  font-weight: 700;
   font-size: clamp(1.9rem, 1.2rem + 2.2vw, 2.9rem);
   line-height: 1;
   letter-spacing: -0.03em;
