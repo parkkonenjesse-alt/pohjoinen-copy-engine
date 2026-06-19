@@ -12,15 +12,15 @@ Opportunity #2: the AI content engine. Specifically the product-pages half, gene
 
 **GitHub repo URL**
 
-`https://github.com/<your-org>/pohjoinen-copy-engine` (placeholder, replace with the real URL)
+https://github.com/parkkonenjesse-alt/pohjoinen-copy-engine
 
-If the repo is private, reetta.jarvelin@intentio.fi has been added as a viewer.
+The repo is private. Add reetta.jarvelin@intentio.fi as a collaborator (GitHub repo → Settings → Collaborators and teams → Add people), or make the repo public.
 
 ---
 
 **Deployed URL**
 
-`https://pohjoinen-copy-engine.vercel.app` (placeholder, replace with the real Vercel URL)
+https://pohjoinen-copy-engine.vercel.app
 
 ---
 
@@ -34,7 +34,7 @@ Next.js (App Router) + TypeScript, deployed on Vercel. Groq's free tier (Llama 3
 
 Pohjoinen has 8,000 Shopify SKUs with thin or missing descriptions, and serves about 180k customers across Finland and the Baltics. Writing accurate, on-brand, SEO product copy by hand in five-plus languages is the bottleneck blocking the Baltic expansion: it would mean weeks of work and a copy team per market. The CMO's directive is to grow 30% on the same headcount using AI, so the obvious wedge is to generate that catalog copy automatically.
 
-I built the Catalog Copy Engine, the product-pages half of that content engine. A merchandiser enters the sparse data they already have (name, category, a few specs, a price), picks the target markets, and gets store-ready copy back for each one: SEO title, meta description, a two-paragraph description, feature bullets, and keyword phrases. A large language model is the core building block. A pinned brand-voice system prompt keeps Pohjoinen's understated Nordic tone consistent (concrete, benefit-led, no hype, never inventing specs), and each language runs as its own structured-JSON call, so the six supported languages (FI, EN, ET, LV, LT, SV) generate in parallel and one failed language never blocks the rest. Output exports straight to a Shopify-ready CSV, and a "Show the prompt" toggle keeps the whole thing transparent. The PoC is live and runs on one real SKU end to end.
+I built the Catalog Copy Engine, the product-pages half of that content engine. A merchandiser enters the sparse data they already have (name, category, a few specs, a price), picks the target markets, and gets store-ready copy back for each one: SEO title, meta description, a two-paragraph description, feature bullets, and keyword phrases. A large language model is the core building block. A pinned brand-voice system prompt keeps Pohjoinen's understated Nordic tone consistent (concrete, benefit-led, no hype, never inventing specs), and each language runs as its own structured-JSON call, so the six supported languages (FI, EN, ET, LV, LT, SV) generate independently and one failed language never blocks the rest. Output exports straight to a Shopify-ready CSV, and a "Show the prompt" toggle keeps the whole thing transparent. The PoC is live and runs on one real SKU end to end.
 
 A note on the model choice, to be upfront. I switched the live demo to Groq's free tier so testing it costs nothing. The design is model-agnostic, and the same prompts run on Claude or any provider in production. The engine calls an OpenAI-compatible chat endpoint server-side with the same brand-voice system prompt and the same per-language structured-JSON contract, so moving to a stronger production model is a change of endpoint and key only. I made this choice so you can evaluate the live demo freely without any spend on my account or yours.
 
