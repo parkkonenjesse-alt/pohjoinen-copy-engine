@@ -5,6 +5,7 @@
 import { useState } from "react";
 import { Reveal } from "@/components/Reveal";
 import { ResultCard, type LangResult } from "@/components/ResultCard";
+import { ArticleStudio } from "@/components/ArticleStudio";
 import { LANGS, SAMPLE_PRODUCTS, type Lang } from "@/lib/samples";
 import { BRAND_SYSTEM, buildUserPrompt, type Product } from "@/lib/prompt";
 import { buildCsv, slugify, type CsvRow } from "@/lib/csv";
@@ -140,6 +141,7 @@ export default function Page() {
           </span>
           <div className="nav-links">
             <a href="#engine">The engine</a>
+            <a href="#pipeline">Content pipeline</a>
             <a href="#scale">How it scales</a>
             <a className="nav-pill" href="#engine">
               AI-powered
@@ -328,6 +330,23 @@ export default function Page() {
                 </div>
               )}
             </div>
+          </Reveal>
+        </section>
+
+        {/* ---- blog / SEO content pipeline ---- */}
+        <section id="pipeline" className="engine">
+          <Reveal className="section-head">
+            <span className="eyebrow">The content pipeline</span>
+            <h2 className="h-xl">Draft the blog, too.</h2>
+            <p className="intro">
+              The second half of the opportunity: turn a keyword into an SEO
+              buyer&rsquo;s-guide draft, structured as Q&amp;A so it ranks and surfaces in
+              AI assistants. Semrush feeds keywords in; an editor refines; WordPress
+              publishes out.
+            </p>
+          </Reveal>
+          <Reveal>
+            <ArticleStudio />
           </Reveal>
         </section>
 
